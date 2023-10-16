@@ -1,0 +1,48 @@
+body {
+    background-color: #8EC5FC;
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    
+}
+
+span {
+    text-decoration: underline;
+}
+
+input {
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 3px;
+    color: white;
+}
+
+button {
+    background-color: transparent;
+    border: 0px;
+    color: white;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+
+header {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    align-items: center;
+}
+
+.box {
+    display: flex;
+}
+
+li {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+
