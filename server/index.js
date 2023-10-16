@@ -1,33 +1,77 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs").promises;
 const app = express();
 
+const path = "todo_db.txt";
 const port = 8080;
 
-let todo_items = [];
+class TodoItems {
+    constructor(items) {
+        this.items = items ?? [];
+    }
 
-app.use(express.json());
+    static async load(path) {
+        try {
+            const data = JSON.parse(await fs.readFile(path));
+            if (Array.isArray(data)) return new TodoItems(data);
+            else return null;
+        } catch { return null; }
+    }
 
-// Allow all requests (insecure but it is a todo app).
-app.use(cors());
+    async save(path) {
+        try {
+            await fs.writeFile(path, JSON.stringify(this.items));
+            return true;
+        } catch (e) { 
+            console.error(e)
+            return false; 
+        }
+    }
 
-app.get("/items", (_, res) => {
-    res.send(todo_items);
-});
+    get_items() {
+        return this.items;
+    }
 
-app.post("/items", (req, res) => {
-    todo_items.push(req.body.item);
+    add_item(item) {
+        this.items.push(item);
+    }
+
+    del_item(item) {
+        const idx = this.items.indexOf(item);
+
+        if (idx === -1) return false;
+
+        this.items.splice(idx, 1);
+        return true;
+    }
+}
+
+main();
+
+async function main() {
+    const todo_items = (await (TodoItems.load(path))) ?? new TodoItems();
+
+    app.use(express.json());
+
+    // Allow all requests (insecure but it is a todo app).
+    app.use(cors());
+
+    app.get("/items", (_, res) => {
+        res.send(todo_items.get_items());
+    });
+
+    app.post("/items", (req, res) => {
+        todo_items.add_item(req.body.item);
+        todo_items.save(path);
+        res.status(204).send();
+    });
+
+    app.delete("/items", (req, res) => {
+    todo_items.del_item(res.body.item);
+    todo_items.save(path);
     res.status(204).send();
-});
+    });
 
-app.delete("/items", (req, res) => {
-   const idx = todo_items.indexOf(req.body.item);
-
-   if (idx !== -1) {
-        todo_items.splice(idx, 1);
-   }
-
-   res.status(204).send();
-})
-
-app.listen(port);
+    app.listen(port);
+}
