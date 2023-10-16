@@ -1,4 +1,4 @@
-import { add_list_item, del_list_item } from "./todo.js";
+import { get_list_items, add_list_item, del_list_item } from "./todo.js";
 
 document.getElementById("btn").onclick = function() {
     let itemText = document.getElementById("todoinput").value
