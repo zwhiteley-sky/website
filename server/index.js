@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs").promises;
-const app = express();
 
 const path = "todo_db.txt";
 const port = 8080;
@@ -51,6 +50,7 @@ main();
 
 async function main() {
     const todo_items = (await (TodoItems.load(path))) ?? new TodoItems();
+    const app = express();
 
     app.use(express.json());
 
@@ -68,7 +68,7 @@ async function main() {
     });
 
     app.delete("/items", (req, res) => {
-    todo_items.del_item(res.body.item);
+    todo_items.del_item(req.body.item);
     todo_items.save(path);
     res.status(204).send();
     });
